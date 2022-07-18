@@ -1,11 +1,38 @@
 import React, { useState } from "react";
 
-function ItemForm() {
+// destructure the onAddItem prop
+function ItemForm({ onAddItem }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("Produce");
+   // Add function to handle submissions
+  //  function handleSubmit(e) {
+  //   e.preventDefault();
+  //   console.log("name:", name);
+  //   console.log("category:", category);
+  // }
+  function handleSubmit(e) {
+    e.preventDefault();
+    const itemData = {
+      name: name,
+      category: category,
+      isInCart: false,
+    };
+    console.log(itemData);
+    fetch("http://localhost:4000/items", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(itemData),
+  })
+    .then((r) => r.json())
+    // .then((newItem) => console.log(newItem));
+    // call the onAddItem prop with the newItem
+    .then((newItem) => onAddItem(newItem));
+  }
 
   return (
-    <form className="NewItem">
+    <form className="NewItem" onSubmit={handleSubmit}>
       <label>
         Name:
         <input
@@ -33,5 +60,4 @@ function ItemForm() {
     </form>
   );
 }
-
 export default ItemForm;
